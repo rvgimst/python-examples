@@ -1,14 +1,14 @@
 import turtle
 wn = turtle.Screen()             # Set up the window and its attributes
-wn.bgcolor("red")
+wn.bgcolor("darkgreen")
 
 
 tess = turtle.Turtle()           # create tess and set some attributes
 tess.color("white")
-#tess.pensize(5)
+tess.pensize(5)
 
 alex = turtle.Turtle()           # create alex
-alex.color("white")
+alex.color("blue")
 
 tess.forward(80)                 # Let tess draw an equilateral triangle
 tess.left(120)
