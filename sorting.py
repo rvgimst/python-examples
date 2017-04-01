@@ -2,6 +2,8 @@ from __future__ import print_function
 import time
 import copy
 import random
+#import math
+
 
 def naivesort (unsorted):
     if (len(unsorted) <= 1):
@@ -56,6 +58,14 @@ def mergesort (unsorted):
 
     return result    
 
+def median3(a, b, c):
+    if a <= b <= c or c <= b <= a:
+        return b
+    elif b <= a <= c or c <= a <= b:
+        return a
+    else:
+        return c
+
 def QS_Swap(array, e1, e2):
     if e1 == e2:
         return
@@ -64,9 +74,27 @@ def QS_Swap(array, e1, e2):
     array[e1] = array[e2]
     array[e2] = tmp
 
+def QS_ChoosePivot(unsorted, begin, end, policy):
+    if policy == "first":
+        return begin
+    elif policy == "last":
+        return end
+    elif policy == "median3":
+        median = median3(unsorted[begin], unsorted[end], unsorted[(end+begin)/2])
+        if median == unsorted[begin]:
+            return begin
+        elif median == unsorted[end]:
+            return end
+        else:
+            return (end+begin)/2
+    else:
+        return random.randint(begin,end)    
+
 def quicksort(unsorted, begin=0, end=None):
     # this is an in-place implementation. Array is not returned,
     # but is altered in the recursive algorithm
+    global ncompares
+
     if end == None:
         end = len(unsorted)-1
 
@@ -74,11 +102,13 @@ def quicksort(unsorted, begin=0, end=None):
     if begin >= end:
         return
 
+ #   p_i = QS_ChoosePivot(unsorted, begin, end, "median3")
     p_i = random.randint(begin, end)
+ #   p_i = begin
     QS_Swap(unsorted, begin, p_i)      # place pivot at the front
     p = unsorted[begin]
 
-    # partition the list in elements <p and elements >=p
+    # partition the list in elements<p and elements >=p
     # invariant:
     #    i is the left-most element of the elements >=p
     #    j is the left-most element of the unpartioned elements
@@ -88,6 +118,9 @@ def quicksort(unsorted, begin=0, end=None):
             QS_Swap(unsorted,j,i)
             i += 1
     #endfor: j==end
+
+    ncompares += end-begin # num of comparisons
+    # actually: (end-begin+1)-1, +1 for including end, -1 for excluding the pivot
 
     QS_Swap(unsorted, begin,i-1) # swap pivot & right-most element <p
     p_i = i-1      # p_i >= begin
@@ -130,7 +163,8 @@ mergesort(copy.copy(data))
 print ("mergesort took", time.time() - start, "s, n=", len(data))
 
 start = time.time()
+ncompares = 0
 #print("data=", data)
 print("result=",quicksort(copy.copy(data)))
 #quicksort(copy.copy(data))
-print ("quicksort took", time.time() - start, "s, n=", len(data))
+print ("quicksort took", time.time() - start, "s, n=", len(data), "ncompares=", ncompares)
